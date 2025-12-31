@@ -1,0 +1,6 @@
+#ifndef ENGINE_ASSETMANAGER_H
+#define ENGINE_ASSETMANAGER_H
+
+int test();
+
+#endif //ENGINE_ASSETMANAGER_H

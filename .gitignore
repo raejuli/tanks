@@ -1,0 +1,27 @@
+# Ignore CLion/CMake build directories
+cmake-build-*/
+
+# Common CMake-generated files and dirs
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+build.ninja
+rules.ninja
+*.ninja
+Testing/
+compile_commands.json
+
+# Compiled binaries and objects
+*.o
+*.obj
+*.a
+*.lib
+*.dll
+*.so
+*.dylib
+*.exe
+*.pdb
+*.ilk
+
+# JetBrains IDE project files (optional)
+.idea/
