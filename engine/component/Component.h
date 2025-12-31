@@ -5,6 +5,7 @@
 class Component {
 public:
     Component();
+    virtual ~Component() = default;
 protected:
 
 private:

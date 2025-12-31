@@ -1,17 +1,18 @@
 #include "Entity.h"
+#include "transform/TransformComponent.h"
 
-Entity::Entity() : uuid(0) {}
-
-bool Entity::addComponent(std::string name, Component component) {
-    return this->components.insert({name, component}).second;
+Entity::Entity() : uuid(0) {
+    this->addComponent("transform", new TransformComponent());  // Every entity should have a transform
 }
 
-Component Entity::getComponent(std::string name) {
-    return this->components.at(name);
+Entity::~Entity() {
+    for (auto& [name, ptr] : components) {
+        delete ptr;
+    }
+    components.clear();
 }
 
 bool Entity::removeComponent(std::string name) {
     return this->components.erase(name);
 }
-
 
