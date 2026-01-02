@@ -25,3 +25,6 @@ compile_commands.json
 
 # JetBrains IDE project files (optional)
 .idea/
+
+# This folder holds external deps which vary for the OS
+external/
