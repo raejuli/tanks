@@ -8,6 +8,9 @@ add_library(engine STATIC
         entity/Entity.cpp
         component/Component.cpp
         transform/TransformComponent.cpp
-        )
+        window/Window.cpp
+        tree/Tree.cpp
+        scene/SceneTree.cpp
+)
 
 target_include_directories(engine PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
