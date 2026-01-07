@@ -14,12 +14,27 @@ include_directories(${GLFW_DIR}/include)
 # Point to the actual GLFW lib directory present in the repo
 link_directories(${GLFW_DIR}/lib)
 
+# Add engine subdirectory first (before executable so glad is available)
+add_subdirectory(engine)
+
 add_executable(tanks main.cpp)
 
-add_subdirectory(engine)
 target_link_libraries(tanks PRIVATE
         engine
-        glad
-        glfw3
-        opengl32   # Windows OpenGL library
         )
+
+# Copy shaders to build directory
+add_custom_command(TARGET tanks POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/shaders
+        $<TARGET_FILE_DIR:tanks>/shaders
+        COMMENT "Copying shaders to build directory"
+)
+
+# Copy textures to build directory
+add_custom_command(TARGET tanks POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/textures
+        $<TARGET_FILE_DIR:tanks>/textures
+        COMMENT "Copying textures to build directory"
+)

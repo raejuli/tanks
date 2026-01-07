@@ -1,3 +1,3 @@
-#include "../Component/Component.h"
+#include "Component.h"
 
 Component::Component() { }

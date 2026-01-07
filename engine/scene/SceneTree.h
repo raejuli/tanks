@@ -5,7 +5,6 @@
 
 #include "tree/Tree.h"
 
-
 class SceneTree : public Tree {
 public:
     SceneTree(const std::string& name) : name(name) {}

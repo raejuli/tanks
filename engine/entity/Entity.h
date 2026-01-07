@@ -4,13 +4,13 @@
 #include <unordered_map>
 #include <string>
 #include <concepts>
-#include <stdexcept>
 
 #include "../component/Component.h"
+#include "scene/SceneTree.h"
 
-class Entity {
+class Entity : public SceneTree {
 public:
-    Entity();
+    Entity(const std::string& name);
     ~Entity();
 
     template<typename TComponent>
@@ -19,7 +19,7 @@ public:
     bool removeComponent(std::string name);
     template<typename TComponent>
         requires std::derived_from<TComponent, Component>
-    TComponent& getComponent(std::string name);
+    TComponent* getComponent(std::string name);
 protected:
     long long uuid;
 private:
@@ -32,19 +32,30 @@ private:
 template<typename TComponent>
     requires std::derived_from<TComponent, Component>
 bool Entity::addComponent(std::string name, TComponent* component) {
-    return this->components.insert({name, static_cast<Component*>(component)}).second;
+    bool added = this->components.insert({name, static_cast<Component*>(component)}).second;
+    if (added) {
+        component->setOwner(this);  // Set the owner when component is added
+    }
+    return added;
 }
 
 template<typename TComponent>
     requires std::derived_from<TComponent, Component>
-TComponent& Entity::getComponent(std::string name) {
+TComponent* Entity::getComponent(std::string name) {
     const auto it = this->components.find(name);
 
-    if (auto* p = dynamic_cast<TComponent*>(it->second)) {
-        return *p;
+    if (it == this->components.end()) {
+        return nullptr;
     }
-    throw std::bad_cast();
+
+    if (auto* p = dynamic_cast<TComponent*>(it->second)) {
+        return p;
+    }
+
+    return nullptr;
 }
 
+
+#include "../component/Component.inl"
 
 #endif //ENGINE_ENTITY_H
