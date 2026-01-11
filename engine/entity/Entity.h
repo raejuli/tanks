@@ -20,6 +20,7 @@ public:
     template<typename TComponent>
         requires std::derived_from<TComponent, Component>
     TComponent* getComponent(std::string name);
+    virtual void update(float dt);
 protected:
     long long uuid;
 private:

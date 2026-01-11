@@ -16,3 +16,8 @@ bool Entity::removeComponent(std::string name) {
     return this->components.erase(name);
 }
 
+void Entity::update(float dt) {
+    // stub
+}
+
+

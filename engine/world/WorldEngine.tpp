@@ -66,12 +66,18 @@ void WorldEngine<TSystems>::update() {
 
 template<ValidServiceContainer TSystems>
 void WorldEngine<TSystems>::systemsTick() {
-
+    for (const auto& system : systems.getAll()) {
+        system->update(deltaTime);
+    }
 }
 
 template<ValidServiceContainer TSystems>
 void WorldEngine<TSystems>::worldTick() {
-
+    Tree::Traverse<SceneTree>(scene, [this](SceneTree* node) {
+        if (auto* sceneNode = dynamic_cast<Entity*>(node)) {
+            sceneNode->update(deltaTime);
+        }
+    });
 }
 
 template<ValidServiceContainer TSystems>
