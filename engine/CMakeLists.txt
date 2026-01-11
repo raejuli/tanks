@@ -5,8 +5,8 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_library(engine STATIC
         assets/AssetManager.cpp
-        entity/Entity.cpp
         component/Component.cpp
+        entity/Entity.cpp
         transform/TransformComponent.cpp
         window/Window.cpp
         tree/Tree.cpp

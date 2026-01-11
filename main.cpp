@@ -4,16 +4,17 @@
 // glad must be included before GLFW
 #include <glad/glad.h>
 #include <glfw3.h>
-#include <memory>
 
 #include "assets/AssetManager.h"
 #include "entity/Entity.h"
+#include "input/InputManager.h"
 #include "scene/SceneTree.h"
 #include "transform/TransformComponent.h"
 #include "renderer/Camera.h"
 #include "renderer/SceneRenderer.h"
 #include "renderer/components/QuadRenderer.h"
 #include "renderer/components/Texture2DComponent.h"
+#include "world/WorldEngine.h"
 
 // Global variables for mouse handling
 double lastMouseX = 400.0;
@@ -54,10 +55,6 @@ void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
 }
 
 int main() {
-    // test linking static engine lib
-    std::cout << test() << std::endl;
-    std::cout << "Hello World!" << std::endl;
-
     // Initialize GLFW and create OpenGL context BEFORE loading GLAD
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -180,83 +177,9 @@ int main() {
     std::cout << "  ESC         - Exit" << std::endl;
     std::cout << "==================================================" << std::endl;
 
-    // Timing for smooth movement
-    float lastFrame = 0.0f;
-    bool tabPressed = false;
-
-    // ==================== MAIN RENDER LOOP ====================
-    while (!glfwWindowShouldClose(window)) {
-        // Calculate delta time
-        float currentFrame = static_cast<float>(glfwGetTime());
-        float deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;
-
-        // Handle input
-        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-            glfwSetWindowShouldClose(window, true);
-        }
-
-        // Switch camera with TAB
-        if (glfwGetKey(window, GLFW_KEY_TAB) == GLFW_PRESS && !tabPressed) {
-            tabPressed = true;
-            
-            // Copy position and rotation from current camera to new camera
-            float x, y, z;
-            activeCamera->getPosition(x, y, z);
-            float yaw = activeCamera->getYaw();
-            float pitch = activeCamera->getPitch();
-
-            activeCamera = &perspectiveCamera;
-            std::cout << "Switched to: PERSPECTIVE camera" << std::endl;
-            
-            activeCamera->setPosition(x, y, z);
-            activeCamera->setRotation(yaw, pitch);
-            sceneRenderer.setCamera(activeCamera);
-        }
-        if (glfwGetKey(window, GLFW_KEY_TAB) == GLFW_RELEASE) {
-            tabPressed = false;
-        }
-
-        // Zoom for orthographic camera
-        // if (!usePerspective) {
-        //     if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
-        //         orthoCamera.setZoom(orthoCamera.getZoom() * (1.0f - deltaTime));
-        //     }
-        //     if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
-        //         orthoCamera.setZoom(orthoCamera.getZoom() * (1.0f + deltaTime));
-        //     }
-        // }
-
-        // Camera movement (WASD + Space/Shift)
-        float cameraSpeed = 5.0f * deltaTime;
-        
-        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-            activeCamera->moveForward(cameraSpeed);
-        }
-        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-            activeCamera->moveForward(-cameraSpeed);
-        }
-        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-            activeCamera->moveRight(-cameraSpeed);
-        }
-        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-            activeCamera->moveRight(cameraSpeed);
-        }
-        if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-            activeCamera->moveUp(cameraSpeed);
-        }
-        if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
-            activeCamera->moveUp(-cameraSpeed);
-        }
-
-        // Clear and render
-        sceneRenderer.clear(0.1f, 0.1f, 0.15f, 1.0f);
-        sceneRenderer.render(&scene);
-
-        // Swap buffers and poll events
-        glfwSwapBuffers(window);
-        glfwPollEvents();
-    }
+    WorldEngine we = WorldEngine<ISystems>{};
+    we.build(ISystems{}, &scene, &sceneRenderer, window, &perspectiveCamera);
+    we.start();
 
     glfwTerminate();
     return 0;
