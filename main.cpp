@@ -177,10 +177,11 @@ int main() {
     std::cout << "  ESC         - Exit" << std::endl;
     std::cout << "==================================================" << std::endl;
 
-    auto* inputManager = new InputManager();
+    // Create services using dependency injection
+    IEngineResources resources{ .window = window };
+    ServiceContainer services = ServiceContainer::create(resources);
+
     WorldEngine<ServiceContainer> we = WorldEngine<ServiceContainer>{};
-    ServiceContainer services{};
-    services.inputManager = std::unique_ptr<InputManager>(inputManager);
     we.build(std::move(services), &scene, &sceneRenderer, window, &perspectiveCamera);
     we.start();
 

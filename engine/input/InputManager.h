@@ -2,6 +2,8 @@
 #define ENGINE_INPUTMANAGER_H
 
 #include <string>
+#include <unordered_map>
+#include <glfw3.h>
 
 #include "service/IService.h"
 
@@ -16,6 +18,9 @@ enum class MouseButton {
 
 class InputManager : public IService{
 public:
+    // no implicit conversions
+    explicit InputManager(GLFWwindow* window);
+
     // IService interface
     void update(int dt) override;
 
@@ -32,10 +37,25 @@ public:
 
     bool isActionPressed(std::string_view action);      // "jump", "fire"
     bool isActionJustPressed(std::string_view action);
+
 protected:
 
 private:
+    GLFWwindow* window;
 
+    // State tracking for edge detection
+    std::unordered_map<Key, bool> currentKeyStates;
+    std::unordered_map<Key, bool> previousKeyStates;
+    std::unordered_map<MouseButton, bool> currentMouseStates;
+    std::unordered_map<MouseButton, bool> previousMouseStates;
+
+    // Action bindings
+    std::unordered_map<std::string, Key> keyBindings;
+    std::unordered_map<std::string, MouseButton> mouseBindings;
+
+    // Helper to convert Key enum to GLFW key code
+    static int keyToGLFW(Key key);
+    static int mouseButtonToGLFW(MouseButton button);
 };
 
 #include "./InputManager.tpp"
