@@ -5,13 +5,9 @@
 #include "renderer/SceneRenderer.h"
 #include "scene/SceneTree.h"
 #include "window/Window.h"
+#include "service/ServiceContainer.h"
 
-struct ISystems {
-    InputManager inputManager;
-};
-
-template<typename TSystems>
-    requires std::derived_from<TSystems, ISystems>
+template<ValidServiceContainer TSystems>
 class WorldEngine final {
 public:
     WorldEngine() = default;
@@ -28,6 +24,7 @@ private:
     Camera* camera;
 
     float lastFrame = 0.0f;
+    float deltaTime = 0.0f;
 
     void update();
     void systemsTick();

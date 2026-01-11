@@ -2,29 +2,27 @@
 #define ENGINE_WORLDENGINE_TPP
 
 #include "WorldEngine.h"
+#include <utility>
 
-template<typename TSystems>
-    requires std::derived_from<TSystems, ISystems>
+template<ValidServiceContainer TSystems>
 void WorldEngine<TSystems>::build(TSystems systems, SceneTree* scene, SceneRenderer* renderer, GLFWwindow* window, Camera* camera) {
-    this->systems = systems;
+    this->systems = std::move(systems);
     this->scene = scene;
     this->renderer = renderer;
     this->window = window;
     this->camera = camera;
 }
 
-template<typename TSystems>
-    requires std::derived_from<TSystems, ISystems>
+template<ValidServiceContainer TSystems>
 void WorldEngine<TSystems>::start() {
     update();
 }
 
-template<typename TSystems>
-    requires std::derived_from<TSystems, ISystems>
+template<ValidServiceContainer TSystems>
 void WorldEngine<TSystems>::update() {
     // Calculate delta time
     float currentFrame = static_cast<float>(glfwGetTime());
-    float deltaTime = currentFrame - lastFrame;
+    deltaTime = currentFrame - lastFrame;
     lastFrame = currentFrame;
 
     while (!glfwWindowShouldClose(window)) {
@@ -66,20 +64,17 @@ void WorldEngine<TSystems>::update() {
     }
 }
 
-template<typename TSystems>
-    requires std::derived_from<TSystems, ISystems>
+template<ValidServiceContainer TSystems>
 void WorldEngine<TSystems>::systemsTick() {
 
 }
 
-template<typename TSystems>
-    requires std::derived_from<TSystems, ISystems>
+template<ValidServiceContainer TSystems>
 void WorldEngine<TSystems>::worldTick() {
 
 }
 
-template<typename TSystems>
-    requires std::derived_from<TSystems, ISystems>
+template<ValidServiceContainer TSystems>
 void WorldEngine<TSystems>::renderTick() {
     // Clear and render
     renderer->clear(0.1f, 0.1f, 0.15f, 1.0f);

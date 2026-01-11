@@ -177,11 +177,13 @@ int main() {
     std::cout << "  ESC         - Exit" << std::endl;
     std::cout << "==================================================" << std::endl;
 
-    WorldEngine we = WorldEngine<ISystems>{};
-    we.build(ISystems{}, &scene, &sceneRenderer, window, &perspectiveCamera);
+    auto* inputManager = new InputManager();
+    WorldEngine<ServiceContainer> we = WorldEngine<ServiceContainer>{};
+    ServiceContainer services{};
+    services.inputManager = std::unique_ptr<InputManager>(inputManager);
+    we.build(std::move(services), &scene, &sceneRenderer, window, &perspectiveCamera);
     we.start();
 
     glfwTerminate();
     return 0;
 }
-
