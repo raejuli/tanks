@@ -6,6 +6,7 @@
 #include <glfw3.h>
 
 #include "input/InputManager.h"
+#include "assets/AssetManager.h"
 
 // Resource container for non-service dependencies (e.g., window, renderer)
 struct IEngineResources {
@@ -44,6 +45,7 @@ private:
 
 struct IEngineInjections {
     std::unique_ptr<InputManager> inputManager;
+    std::unique_ptr<AssetManager> assetManager;
 };
 
 // Concept: must expose iteration
@@ -61,6 +63,7 @@ struct ServiceContainer : IEngineInjections{
         ServiceBuilder builder(resources);
         ServiceContainer container;
         container.inputManager = builder.build<InputManager>();
+        container.assetManager = builder.build<AssetManager>();
 
         return container;
     }
@@ -68,6 +71,7 @@ struct ServiceContainer : IEngineInjections{
     std::vector<IService*> getAll() {
         return {
             inputManager.get(),
+            assetManager.get(),
         };
     }
 };

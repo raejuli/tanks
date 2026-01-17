@@ -15,6 +15,9 @@ public:
     // Construct from VertexShader and FragmentShader objects
     Shader(const VertexShader& vertexShader, const FragmentShader& fragmentShader);
 
+    // Construct from a base path: expects files basePath + ".vert" and basePath + ".frag"
+    explicit Shader(const std::string& basePath);
+
     // Load from .vert and .frag file paths
     static std::unique_ptr<Shader> fromFiles(const std::string& vertexPath, const std::string& fragmentPath);
 

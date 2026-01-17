@@ -1,5 +1,6 @@
 #include "Shader.h"
 #include <iostream>
+#include <string>
 
 Shader::Shader(const char* vertexSource, const char* fragmentSource) {
     GLuint vertexShader = compileShader(GL_VERTEX_SHADER, vertexSource);
@@ -14,6 +15,23 @@ Shader::Shader(const char* vertexSource, const char* fragmentSource) {
 Shader::Shader(const VertexShader& vertexShader, const FragmentShader& fragmentShader) {
     if (!vertexShader.isValid() || !fragmentShader.isValid()) {
         std::cerr << "ERROR::SHADER::INVALID_SHADER_OBJECTS" << std::endl;
+        valid = false;
+        return;
+    }
+
+    linkProgram(vertexShader.getHandle(), fragmentShader.getHandle());
+}
+
+// Construct from base path: expects basePath.vert and basePath.frag
+Shader::Shader(const std::string& basePath) {
+    const std::string vertexPath = basePath + ".vert";
+    const std::string fragmentPath = basePath + ".frag";
+
+    VertexShader vertexShader(vertexPath);
+    FragmentShader fragmentShader(fragmentPath);
+
+    if (!vertexShader.isValid() || !fragmentShader.isValid()) {
+        std::cerr << "ERROR::SHADER::INVALID_SHADER_FILES for base path: " << basePath << std::endl;
         valid = false;
         return;
     }
