@@ -19,7 +19,7 @@ public:
     AssetManager() : textures(this->idPathMap), shaders(this->idPathMap) { } ;
 
     void loadSync(std::string_view path, AssetType type, std::string_view id);
-    void unloadSync(std::string_view id);
+    void unloadSync(AssetType type, std::string_view id);
 
     std::shared_ptr<Texture2D> getTexture(std::string_view id);
     // void getMesh();
@@ -28,7 +28,7 @@ public:
     // void getAnimation();
 
     // IService interface
-    void update(int dt) override { /* no-op for now */ }
+    void update(int dt) override { }
 
 protected:
 
